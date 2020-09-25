@@ -8,6 +8,8 @@ train_imagenet.py
 .vscode/
 output/
 two-stage-data/
+*.pkl
+*.zip
 
 # OS X
 .DS_Store
