@@ -5,6 +5,9 @@ log/
 saved-models/
 train_imagenet.py
 .idea/
+.vscode/
+output/
+two-stage-data/
 
 # OS X
 .DS_Store

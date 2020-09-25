@@ -172,7 +172,7 @@ class Baseline(nn.Module):
                 return global_feat
 
     def load_param(self, trained_path):
-        param_dict = torch.load(trained_path)
+        param_dict = torch.load(trained_path).state_dict()
         for i in param_dict:
             if 'classifier' in i:
                 continue

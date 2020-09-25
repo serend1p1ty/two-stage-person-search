@@ -18,17 +18,31 @@ from data import make_data_loader
 from engine.inference import inference
 from modeling import build_model
 from utils.logger import setup_logger
+import pickle as pk
+
+
+def pickle(data, file_path):
+    with open(file_path, "wb") as f:
+        pk.dump(data, f, pk.HIGHEST_PROTOCOL)
+
+
+def unpickle(file_path):
+    with open(file_path, "rb") as f:
+        data = pk.load(f)
+    return data
 
 
 def main():
-    parser = argparse.ArgumentParser(description="ReID Baseline Inference")
-    parser.add_argument(
-        "--config_file", default="", help="path to config file", type=str
-    )
-    parser.add_argument("opts", help="Modify config options using the command-line", default=None,
-                        nargs=argparse.REMAINDER)
+    # parser = argparse.ArgumentParser(description="ReID Baseline Inference")
+    # parser.add_argument(
+    #     "--config_file", default="", help="path to config file", type=str
+    # )
+    # parser.add_argument("opts", help="Modify config options using the command-line", default=None,
+    #                     nargs=argparse.REMAINDER)
 
-    args = parser.parse_args()
+    # args = parser.parse_args()
+    # pickle(args, "test_args.pkl")
+    args = unpickle("test_args.pkl")
 
     num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
 
