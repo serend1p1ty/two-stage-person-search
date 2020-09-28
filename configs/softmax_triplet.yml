@@ -16,7 +16,8 @@ INPUT:
   PADDING: 10
 
 DATASETS:
-  NAMES: ('market1501')
+  NAMES: ('cuhk_sysu')
+  ROOT_DIR: ('./data/cuhk_sysu')
 
 DATALOADER:
   SAMPLER: 'softmax_triplet'
@@ -53,7 +54,7 @@ SOLVER:
 
   CHECKPOINT_PERIOD: 40
   LOG_PERIOD: 20
-  EVAL_PERIOD: 40
+  EVAL_PERIOD: 120
 
 TEST:
   IMS_PER_BATCH: 128

@@ -69,7 +69,7 @@ def get_model_transform():
 
     train_loader, val_loader, num_query, num_classes = make_data_loader(cfg)
     model = build_model(cfg, num_classes)
-    model.load_param(cfg.TEST.WEIGHT)
+    model.load_param("output/resnet50_model_80.pth")
     model.eval()
     model.cuda()
 
@@ -91,16 +91,18 @@ if __name__ == '__main__':
     nu = 0
     for recall, y_score, y_true in tqdm(zip(recalls, y_scores, y_trues)):
         sims = []
-        for k in range(2):
+        k = 10
+        for i in range(k):
             img1 = transform(read_image("two-stage-data/top10_imgs/query-%s.jpg" % nu)).unsqueeze(0).cuda()
             feat1 = torch.nn.functional.normalize(model(img1), dim=1, p=2)
-            img2 = transform(read_image("two-stage-data/top10_imgs/gallery-%s-%s.jpg" % (nu, k))).unsqueeze(0).cuda()
+            img2 = transform(read_image("two-stage-data/top10_imgs/gallery-%s-%s.jpg" % (nu, i))).unsqueeze(0).cuda()
             feat2 = torch.nn.functional.normalize(model(img2), dim=1, p=2)
             sim = float((feat1 * feat2).sum())
             sims.append(sim)
         sims = np.array(sims)
-        ind = sims.argmax()
-        y_true[0], y_true[ind] = y_true[ind], y_true[0]
+        inds = sims.argsort()[::-1]
+        # y_true[0], y_true[ind] = y_true[ind], y_true[0]
+        y_true[:k] = y_true[:k][inds]
         nu += 1
         ap = 0 if recall == 0 else average_precision_score(y_true, y_score) * recall
         aps.append(ap)

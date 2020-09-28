@@ -6,6 +6,7 @@
 
 import argparse
 import os
+import os.path as osp
 import sys
 import torch
 
@@ -20,9 +21,10 @@ from layers import make_loss, make_loss_with_center
 from solver import make_optimizer, make_optimizer_with_center, WarmupMultiStepLR
 
 from utils.logger import setup_logger
+from tensorboardX import SummaryWriter
 
 
-def train(cfg):
+def train(cfg, tb_writer):
     # prepare dataset
     train_loader, val_loader, num_query, num_classes = make_data_loader(cfg)
 
@@ -65,7 +67,8 @@ def train(cfg):
             scheduler,      # modify for using self trained model
             loss_func,
             num_query,
-            start_epoch     # add for using self trained model
+            start_epoch,     # add for using self trained model
+            tb_writer
         )
     elif cfg.MODEL.IF_WITH_CENTER == 'yes':
         print('Train with center loss, the loss type is', cfg.MODEL.METRIC_LOSS_TYPE)
@@ -137,6 +140,7 @@ def main():
     if output_dir and not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
+    tb_writer = SummaryWriter(osp.join(output_dir, "tb_logs"))
     logger = setup_logger("reid_baseline", output_dir, 0)
     logger.info("Using {} GPUS".format(num_gpus))
     logger.info(args)
@@ -149,9 +153,9 @@ def main():
     logger.info("Running with config:\n{}".format(cfg))
 
     if cfg.MODEL.DEVICE == "cuda":
-        os.environ['CUDA_VISIBLE_DEVICES'] = cfg.MODEL.DEVICE_ID    # new add by gu
+        os.environ['CUDA_VISIBLE_DEVICES'] = "1"    # new add by gu
     cudnn.benchmark = True
-    train(cfg)
+    train(cfg, tb_writer)
 
 
 if __name__ == '__main__':

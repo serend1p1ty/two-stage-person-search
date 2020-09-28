@@ -140,7 +140,8 @@ def do_train(
         scheduler,
         loss_fn,
         num_query,
-        start_epoch
+        start_epoch,
+        tb_writer
 ):
     log_period = cfg.SOLVER.LOG_PERIOD
     checkpoint_period = cfg.SOLVER.CHECKPOINT_PERIOD
@@ -183,6 +184,8 @@ def do_train(
                         .format(engine.state.epoch, ITER, len(train_loader),
                                 engine.state.metrics['avg_loss'], engine.state.metrics['avg_acc'],
                                 scheduler.get_lr()[0]))
+            total_steps = len(train_loader) * (engine.state.epoch - 1) + ITER
+            tb_writer.add_scalars("Train/Loss", {"loss": engine.state.metrics['avg_loss']}, total_steps)
         if len(train_loader) == ITER:
             ITER = 0
 

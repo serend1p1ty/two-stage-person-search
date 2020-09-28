@@ -7,9 +7,11 @@ train_imagenet.py
 .idea/
 .vscode/
 output/
+two-stage-data-91.74/
 two-stage-data/
 *.pkl
 *.zip
+cuhk_sysu
 
 # OS X
 .DS_Store

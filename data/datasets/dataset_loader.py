@@ -36,8 +36,8 @@ class ImageDataset(Dataset):
         return len(self.dataset)
 
     def __getitem__(self, index):
-        img_path, pid, camid = self.dataset[index]
-        img = read_image(img_path)
+        img_path, box, pid, camid = self.dataset[index]
+        img = read_image(img_path).crop(box)
 
         if self.transform is not None:
             img = self.transform(img)
